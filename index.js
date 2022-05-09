@@ -35,9 +35,17 @@ async function run(){
           await client.connect();
           const database = client.db('modern_health_service');
           const appointmentsCollection = database.collection('appointments');
+         
+          app.get('/appointments', async (req, res) => {
+            
+            const cursor = appointmentsCollection.find({});
+            const appointments = await cursor.toArray();
+            res.json(appointments);
+          })
 
           app.post('/appointments', async (req, res) => {
                 const appointment = req.body;
+                
                 const result = await appointmentsCollection.insertOne(appointment);
                 console.log(result);
                 res.json(result)
@@ -55,6 +63,8 @@ run().catch(console.dir);
 app.get('/', (req, res) => {
   res.send('Modern Health Tecnology')
 })
+
+
 
 app.listen(port, () => {
   console.log(`listening at ${port}`)
